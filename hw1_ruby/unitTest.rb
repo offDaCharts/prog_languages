@@ -7,6 +7,18 @@ class String
   end
 end
 
+def getArrayFromPowersOfTwoGenerator(limit)
+	arr = []
+	powers_of_two(limit) {|x| arr << x}
+	return arr
+end
+
+def getArrayFromPowersGenerator(base, limit)
+	arr = []
+	powers(base, limit) {|x| arr << x}
+	return arr
+end
+
 class TestUtil < Test::Unit::TestCase
 
   def test_strip_vowels()
@@ -25,17 +37,17 @@ class TestUtil < Test::Unit::TestCase
   end
 
   def test_powers_of_two()
-    assert_equal(powers_of_two(20) {|x| x}, [1,2,4,8,16])
-    assert_equal(powers_of_two(1111) {|x| x}, [1,2,4,8,16,32,64,128,256,512,1024])
-    assert_equal(powers_of_two(0) {|x| x}, [])
-    assert_equal(powers_of_two(5) {|x| x}, [1,2,4])
+    assert_equal(getArrayFromPowersOfTwoGenerator(20), [1,2,4,8,16])
+    assert_equal(getArrayFromPowersOfTwoGenerator(1111), [1,2,4,8,16,32,64,128,256,512,1024])
+    assert_equal(getArrayFromPowersOfTwoGenerator(0), [])
+    assert_equal(getArrayFromPowersOfTwoGenerator(5), [1,2,4])
   end
 
   def test_powers()
-	assert_equal(powers(2,1111) {|x| x}, [1,2,4,8,16,32,64,128,256,512,1024])
-    assert_equal(powers(3,400) {|x| x}, [1,3,9,27,81,243])
-    assert_equal(powers(4,400) {|x| x}, [1,4,16,64,256])
-    assert_equal(powers(5,0) {|x| x}, [])
+	assert_equal(getArrayFromPowersGenerator(2,1111), [1,2,4,8,16,32,64,128,256,512,1024])
+    assert_equal(getArrayFromPowersGenerator(3,400), [1,3,9,27,81,243])
+    assert_equal(getArrayFromPowersGenerator(4,400), [1,4,16,64,256])
+    assert_equal(getArrayFromPowersGenerator(5,0), [])
   end
 
   def test_interleave()

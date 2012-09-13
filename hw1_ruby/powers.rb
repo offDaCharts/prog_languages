@@ -1,3 +1,3 @@
 def powers(base, limit)
-    yield arr = (0..Math.log(limit)/Math.log(base)).map {|x| base**x}
+    0.upto(Math.log(limit)/Math.log(base)) {|x| yield base ** x}
 end
