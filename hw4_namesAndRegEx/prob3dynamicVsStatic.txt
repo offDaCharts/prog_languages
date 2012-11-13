@@ -1,0 +1,15 @@
+3.
+If the language is statically typed the program will print:
+1
+1
+2
+1
+Because the the call to setX(0), the call to first(), and the first 2 calls to printX() all refer to the global x.  So the global x is set to 0, then 1, then printed twice (once from first and once from the main program).
+In second(), the methods refer to the x declared in second(), so this x is set to 2 and then printed.  But when printX is called again from the main program, it refers again to the global x which is still 1.
+
+If the language is dynamically typed, the program will print:
+1
+1
+2
+2
+Because all the references to x in setX and in printX, always refer to the global x.  So x is set to 0, then 1, then printed twice, then set to 2, and printed twice again.  The x declared in second is never used.

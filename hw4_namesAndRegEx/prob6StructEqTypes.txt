@@ -1,0 +1,2 @@
+6.
+For structural equivalence, the compile has to check if the entire structure of one object is the same as the structure of another object.  Therefore, when comparing an object of type A and an object of type B, the compiler will have to check that all of the attributes of each object are also equivalent.  In checking that the first attribute of each is equivalent, the compiler will have to check if types B and A are equivalent and thus the compiler may run into an infinite loop.

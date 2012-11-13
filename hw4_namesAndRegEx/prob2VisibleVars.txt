@@ -1,0 +1,36 @@
+2.
+ch 5 problem 11 from book:
+Determine visible variables in last function call:
+
+a.
+d, e, f from fun3
+c from fun 2
+b from fun 1
+a from main
+
+b.
+d, e, f from fun3
+b, c from fun 1
+a from main
+
+c.
+e, f from fun3
+b, c, d from fun 1
+a from main
+
+d.
+e, f from fun3
+b, c, d from fun 1
+a from main
+
+e.
+f from fun3
+c, d, e from fun 2
+b from fun 1
+a from main
+
+f.
+f from fun3
+e from fun 2
+b, c, d from fun 1
+a from main

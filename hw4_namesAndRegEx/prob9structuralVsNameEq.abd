@@ -1,0 +1,8 @@
+type Int1 is range 1..10;
+type Int1 is range 1..10;
+
+X : Int1 := 0;
+Y : Int2 := X; 
+--This will result is a type error because name equivalence is being used.
+--However, Int1 and Int2 have exactly the same structure so if structural
+--equivalence was used, the code would run and Y would be properly assigned X

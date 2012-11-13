@@ -1,0 +1,23 @@
+4.
+var x = 100;
+function setX(n) {x = n;}
+function printX() {console.log(x);}
+function foo(S, P, n) {
+    var x;
+    if (n === 1 || n === 3) {setX(n);} else {S(n);}
+    if (n === 1 || n === 2) {printX();} else {P();}
+}
+setX(0); foo(setX, printX, 1); printX();
+setX(0); foo(setX, printX, 2); printX();
+setX(0); foo(setX, printX, 3); printX();
+setX(0); foo(setX, printX, 4); printX();
+
+For shallow binding, the entity is bound at the time of the function call, so all the calls made from inside foo, will refer to foo's local x.  The setX and printX calls made from outside of foo (from main) will always refer to the global x.  Thus the output is 1, 0, 2, 0, 3, 0, 4, 0.  The 0's are from the references to the global x and the 1,2,3,4 is from the local references.
+
+For deep binding, the entity is bound at the time of the function definition.  Inside foo, S and P refer to the global x because their binding is created when setX and printX are passed as parameters when the local x hasn't been defined yet, and setX and printX inside foo refer to the local x.
+When 1 is passed in, foo sets the local x and prints the local x.
+When 2 is passed in, foo sets the global x and prints the local x.
+When 3 is passed in, foo sets the local x and prints the global x.
+When 4 is passed in, foo sets the global x and prints the global x.
+The setX's and printX's called from outside foo always reference the global x.
+Thus the output is 1, 0, undefined, 2, 0, 0, 4, 4

@@ -1,0 +1,9 @@
+8.
+double (*b)[n];
+b is declared as a pointer to an array of doubles of size n.
+
+double (*c[n])();
+c is an array of pointer of size n that pointer to functions that each return a double
+
+double (*d())[n];
+d is a function that returns a pointer to an array of doubles of size n

@@ -1,0 +1,132 @@
+2.
+ch 5 problem 11 from book:
+Determine visible variables in last function call:
+
+a.
+d, e, f from fun3
+c from fun 2
+b from fun 1
+a from main
+
+b.
+d, e, f from fun3
+b, c from fun 1
+a from main
+
+c.
+e, f from fun3
+b, c, d from fun 1
+a from main
+
+d.
+e, f from fun3
+b, c, d from fun 1
+a from main
+
+e.
+f from fun3
+c, d, e from fun 2
+b from fun 1
+a from main
+
+f.
+f from fun3
+e from fun 2
+b, c, d from fun 1
+a from main
+
+
+
+3.
+If the language is statically typed the program will print:
+1
+1
+2
+1
+Because the the call to setX(0), the call to first(), and the first 2 calls to printX() all refer to the global x.  So the global x is set to 0, then 1, then printed twice (once from first and once from the main program).
+In second(), the methods refer to the x declared in second(), so this x is set to 2 and then printed.  But when printX is called again from the main program, it refers again to the global x which is still 1.
+
+If the language is dynamically typed, the program will print:
+1
+1
+2
+2
+Because all the references to x in setX and in printX, always refer to the global x.  So x is set to 0, then 1, then printed twice, then set to 2, and printed twice again.  The x declared in second is never used.
+
+
+
+
+4.
+var x = 100;
+function setX(n) {x = n;}
+function printX() {console.log(x);}
+function foo(S, P, n) {
+    var x;
+    if (n === 1 || n === 3) {setX(n);} else {S(n);}
+    if (n === 1 || n === 2) {printX();} else {P();}
+}
+setX(0); foo(setX, printX, 1); printX();
+setX(0); foo(setX, printX, 2); printX();
+setX(0); foo(setX, printX, 3); printX();
+setX(0); foo(setX, printX, 4); printX();
+
+For shallow binding, the entity is bound at the time of the function call, so all the calls made from inside foo, will refer to foo's local x.  The setX and printX calls made from outside of foo (from main) will always refer to the global x.  Thus the output is 1, 0, 2, 0, 3, 0, 4, 0.  The 0's are from the references to the global x and the 1,2,3,4 is from the local references.
+
+For deep binding, the entity is bound at the time of the function definition.  Inside foo, S and P refer to the global x because their binding is created when setX and printX are passed as parameters when the local x hasn't been defined yet, and setX and printX inside foo refer to the local x.
+When 1 is passed in, foo sets the local x and prints the local x.
+When 2 is passed in, foo sets the global x and prints the local x.
+When 3 is passed in, foo sets the local x and prints the global x.
+When 4 is passed in, foo sets the global x and prints the global x.
+The setX's and printX's called from outside foo always reference the global x.
+Thus the output is 1, 0, undefined, 2, 0, 0, 4, 4
+
+
+
+5.
+a.
+ruby: 
+/^"(\\[ -~]|[ -\[\]-~])*"$/
+java:
+"^\"(\\\\[ -~]|[ -\\[\\]-~])*\"$"
+
+
+b.
+ruby: 
+/^\(\*((?!\*\)).)*\*\)$/
+java:
+"^\\(\\*((?!\\*\\)).)*\\*\\)$"
+
+c.
+ruby:
+/^-?(0|([1-9]\d*))(\.(\d)+)?([eE][+-]?\d+)?$/
+java:
+"^-?(0|([1-9]\\d*))(\\.(\\d)+)?([eE][+-]?\\d+)?$"
+
+d.
+ruby: 
+/\b(?:[a-qs-zA-Z]|r(?!(ead|ed|eal)\b))[a-zA-Z]*\b/
+java:
+"\\b(?:[a-qs-zA-Z]|r(?!(ead|ed|eal)\\b))[a-zA-Z]*\\b"
+
+
+
+6.
+For structural equivalence, the compile has to check if the entire structure of one object is the same as the structure of another object.  Therefore, when comparing an object of type A and an object of type B, the compiler will have to check that all of the attributes of each object are also equivalent.  In checking that the first attribute of each is equivalent, the compiler will have to check if types B and A are equivalent and thus the compiler may run into an infinite loop.
+
+
+
+7.
+The size of this structure is 8 bytes (char is 1 byte, int is 4 bytes, but the compiler pads the structure to 8 bytes).  The array is stored in memory by storing all of row 1 first, then all of row 2 first and so on.
+So the location of row 3, column 7 is 1000+8*10*3+7*8=1296
+
+
+
+8.
+double (*b)[n];
+b is declared as a pointer to an array of doubles of size n.
+
+double (*c[n])();
+c is an array of pointer of size n that pointer to functions that each return a double
+
+double (*d())[n];
+d is a function that returns a pointer to an array of doubles of size n
