@@ -1,0 +1,265 @@
+1.
+(-b + sqrt(4 * a * c)) / (2 * a)
+
+A special symbol needs to be created for unary negation so that it can be distinguished from subtraction.  For example, it the same symbol were used then the prefix notation expression + - - 1 2 3 could be interpreted both as ((-1 - 2) + 3) or (-(1 - 2) + 3)
+*For my notation, '_' is used as a unary negation.
+
+pre:
+(/ (+ (_ b) (sqrt (* (* 4 a) c))) (* 2 a))
+/ + _ b sqrt * * 4 a c * 2 a
+
+post:
+(((b _) (((4 a *) c *) sqrt) +) (2 a *) /)
+b _ 4 a * c * sqrt + 2 a * /
+
+2. 
+int fun(int *i) {
+    *i += 5;
+    return 4;
+}
+void main() {
+    int x = 3;
+    x = x + fun(&x);
+}
+
+a) If operands are evaluated from left to right then in the expression x + fun(&x), x will first be evaluated to the current value of x which is 3, and then fun(&x) will be evaluated to what is returned by the function which is 4.  Thus x = 3 + 4 which is 7.
+b) If operands are evaluated from right to left then in the expression x + fun(&x), fun(&x) will first be evaluated to what is returned by the function which is 4.  However, fun(&x) also increments the value of x by 5 so when x is evaluated to its current value, it will be 8.  Thus x = 8 + 4 which is 12.
+
+3.
+In low level programming languages like machine code, goto (or jump or branch) statements are required to implement certain functionalities.  However, code written with a lot of goto statements can be hard to follow.  When code is not written as a representation of program flow it can hinder the readability of the code.  Less readable code can also make programs harder to debug.  Furthermore, code with multiple goto statements can increase risk of a program entering an infinite loop.  For all of these reasons goto statements are typically frowned upon in higher level languages because higher level languages offer other functionality that make goto statements unnecessary.
+
+int first_zero_row = -1; /* none */
+int i, j;
+for (i = 0; i < n; i++) {
+    for (j = 0; j < n; j++) {
+        if (A[i][j]) goto next;
+    }
+    first_zero_row = i;
+    break;
+    next: ;
+}
+The code above finds the first all zero element row in an n by n matrix.  One alternative to a goto statement in this code is a boolean flag that can be used as an indicator.  Typically, some assumption is made and the boolean flag is set to that assumption (true or false).  The assumption is then checked and if a contradiction is found, the boolean flag will be changed.  The following is an example of how the previous code can be written with a boolean flag instead of a goto.
+#define true 1
+#define false 0
+int first_zero_row = -1; /* none */
+int i, j, found_zero_row;
+for (i = 0; i < n; i++) {
+    found_zero_row = true;	//Assume this row is all zeros
+    for (j = 0; j < n; j++) {
+        if (A[i][j]) {
+            found_zero_row = false;
+            break;
+        };
+    }
+    if (found_zero_row) {
+        first_zero_row = i;
+        break;
+    }
+}
+Other variables can be used as flags other than booleans.  The following uses first_zero_row in a sense as a boolean flag.  The program assumes that the current row contains all zeros so it sets this variable to the current row.  It then checks this assumption by looping through this row and searching for non-zero elements.  If one is found, then the variable is set back to -1 indicating that the current row is not all zeroes.  This variable is checked to see if a zero row has been found to see if the outer loop should be broken out of.
+int first_zero_row = -1; /* none */
+int i, j;
+for (i = 0; i < n; i++) {
+    first_zero_row = i;
+    for (j = 0; j < n; j++) {
+        if (A[i][j]) {
+            first_zero_row = -1;
+            break;
+        };
+    }
+    if (first_zero_row == i) {
+        break;
+    }
+}
+
+While there is no technical reason against using a goto statement, using gotos is generally considered to be bad programming practice because it makes code harder to read, harder to debug, and increases the chances of introducing infinitely loops.  Furthermore, the goto statement does not provided any functionality that cannot be implemented by code structured without goto statements.  But the most important reason not to use a goto statement is: http://xkcd.com/292/
+
+4.
+Ruby:
+def getMax(arr)
+    def maxTailRecur(arr, max, index)
+        if index == arr.size 
+	    max
+        else
+	    maxTailRecur(arr, (arr[index] > max) ? arr[index] : max, index + 1)
+        end
+    end
+    return maxTailRecur(arr, arr[0], 1);
+end
+
+puts getMax([1,2,43,24,56,76,8])
+
+C:
+#include <stdio.h>
+
+int getMax(int arr[], int length) {
+	return maxTailRecur(arr, arr[0], 1, length);
+}
+
+int maxTailRecur(int arr[], int max, int index, int length){
+	if(index == length) {
+		return max;
+	} else {
+		return maxTailRecur(arr, (arr[index] > max)? arr[index] : max, index + 1, length);
+	}
+}
+
+
+int main(){
+    int array[10] = { 1,2,10,3,6,7,4,9,6,9 };
+    printf("%d\n", getMax(array, 10));
+    return 0;
+}
+
+Javascript:
+var getMax = function(arr) {
+    var maxTailRecur = function(arr, max, index) {
+        if(index == arr.length) {
+            return max;
+        } else {
+            return maxTailRecur(arr, (arr[index] > max)? arr[index] : max, index + 1);
+        }
+    }
+    return maxTailRecur(arr, arr[0], 1);
+}
+
+alert(getMax([1,2,43,24,56,76,8]));
+
+Clojure:
+(defn maxTailRecur [arr max index]
+    (if (= (count arr) index)
+	    max
+	    (maxTailRecur arr (if (> (nth arr index) max) (nth arr index) max) (+ index 1))
+	)
+)
+
+(defn getMax [arr]
+	(maxTailRecur arr (nth arr 0) 1)
+)
+
+(println (getMax [1 2 43 24 56 76 8]))
+
+
+5.
+/* This program shows that there is no set order in which c
+ * parameters are evaluated
+ */
+
+#include <stdio.h>
+
+int main(){
+	int a;
+	//Note: Let the arguements be numbered 1,2,3 from left to right
+	
+	a = 0;
+    printf("%d\t%d\t%d\n", a, a++, a++);
+	//Output: 2 1 0
+	//Arguements are evaluated in the order: 3 2 1
+	
+	a = 0;
+    printf("%d\t%d\t%d\n", a++, a, a++);
+	//Output: 1 2 0
+	//Arguements are evaluated in the order: 3 1 2
+	
+	a = 0;
+    printf("%d\t%d\t%d\n", a++, a++, a);
+	//Output: 1 0 2
+	//Arguements are evaluated in the order: 2 1 3
+	
+	a = 0;
+    printf("%d\t%d\t%d\n", a++, a++, a++);
+	//Output: 2 1 0
+	//Arguements are evaluated in the order: 3 2 1
+	
+    return 0;
+}
+
+
+6.
+Even though i is never initialized, it is given a memory location on the stack.  When foo() ends, the stack is reset--that is the stack pointer is moved such that the memory location of i is no longer on the stack.  However, when foo is called again, the stack will be created again (in the same location in memory) thus when i is declared it will be given the same memory location that i held before.  Therefore, with every call of foo(), the contents of this memory location is increment and then printed.  Some systems will print 0 1 2 3 4 5  6 7 8 9 because the memory location i is initially set to 0 by default.  Other systems might not initially set this value so the output might be 10 numbers increasing by 1 each time but starting at something other than 0.  Still others might give non-deterministic behavior if the stack is not initialized at the same spot every time the program is run.
+
+7. An example where addition is not commutative is:
+var a=1;
+alert(a++ + a--);
+a = 1;
+alert(a-- + a++);
+The first alert yields 3 where the second alert yields 1 even though the only difference is the order of the addition statement.
+
+
+8.
+In some versions of Fortran, numeric literals are treated as variables.  That is, instead of the literal 2 indicating the number 2, it instead refers to a memory location that the value of 2 is placed inside.  In this code when the literal 2 is passed by reference to the function foo, a memory location is created with the value 2 that the literal 2 refers to.  Inside foo, the value of what is in this memory location (referred to by x) is incremented by 1.  Thus the memory location referred to by the literal 2 now holds the value 3.  Therefore, the '2' in 'print* 2' refers to this location so '3' is printed.  Other implementations still pass by reference but do not have this problem because literals are treated as variables.
+
+
+9.
+(define (x lis)
+    (cond
+        ((null? lis) 0)
+        ((not (list? (car lis)))
+            (cond
+                ((eq? (car lis) #f) (x (cdr lis)))
+                (else (+ 1 (x (cdr lis))))))
+        (else (+ (x (car lis)) (x (cdr lis))))
+    )
+)
+This scheme function x accepts a list as its parameter and returns the number of "non-false" elements the list has.  If the list has lists as elements then it counts all of the sub-lists' elements.
+
+Clojure equivalent code:
+(defn x [lis]
+    (if (empty? lis)
+	    0
+        (if (not (list? (peek lis)))
+            (if (= (peek lis) false) 
+			    (x (pop lis))
+                (+ 1 (x (pop lis))))
+            (+ (x (peek lis)) (x (pop lis))))
+    )
+)
+
+Awesomer Clojure equivalent code:
+(defn x [lis]
+    (reduce + (map (fn [x] (if (false? x) 0 1)) (flatten lis)))
+)
+
+
+10.
+a) Straight forward flatten in js:
+var flatten = function(arr) {
+    var fringe = [];
+    for(var i = 1; i < arr.length; i++) {
+        if(typeof(arr[i])==='object') {
+            fringe = fringe.concat(flatten(arr[i]));
+        } else {
+            fringe.push(arr[i]);
+        }
+    }
+    return fringe;
+}
+
+flatten(['a','b',['c','d','e'],['f','g',['h','i']]]); //returns ['b','d','e','g','i']
+
+b) This will not be very efficient when sameFringe is called and the trees differ in the first few leaves.  Flatten would traverse and flatten the entire tree before checking to see if the fringes are equivalent when the program only needs to look at the first few leaves to see that they are not equivalent.
+
+c) Lazy Flatten in Clojure to make same fringe efficient:
+(defn myFlatten [lis]
+    (if (and (not (empty? lis)) (> (count lis) 1))
+        (if (list? (nth lis 1))
+	        (lazy-cat (myFlatten (nth lis 1)) (myFlatten (pop lis)))
+            (lazy-cat (list (nth lis 1)) (myFlatten (pop lis)))
+        )
+	)
+)
+
+(println (take 5 (myFlatten (list 1 2 (list 3 4 (list 5 6)) 7 (list 2 (list 3 4))))))
+;;Returns (2 4 6 7 4)
+
+d) Efficient Javascript version of flatten:
+var flatten = function(arr, callback) {
+    for(var i = 1; i < arr.length; i++) {
+        if(typeof(arr[i])==='object') {
+            flatten(arr[i]);
+        } else {
+            callback(arr[i]);
+        }
+    }
+}
+//Same fringe can use the callback to compare values 1 at a time as soon as they are generated so it can determine if the trees are different before traversing the entire tree.
